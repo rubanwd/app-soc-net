@@ -1,0 +1,1 @@
+var Assets = require('./backend/Assets');
