@@ -1,0 +1,1 @@
+module.exports = {"v":4,"t":[{"t":7,"e":"header","f":[{"t":7,"e":"navigation"}," ",{"t":7,"e":"div","m":[{"n":"class","f":"hero","t":13}],"f":[{"t":7,"e":"h1","f":["Node.js by example"]}]}]}," ",{"t":7,"e":"appfooter"}]}
