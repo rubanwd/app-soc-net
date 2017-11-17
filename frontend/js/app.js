@@ -57,6 +57,22 @@ var currentPage;
 var body;
 
 
+// window.onload = function() {
+//  userModel = new UserModel();
+ 
+// }
+
+var showPage = function(newPage) {
+	if(currentPage) 
+	currentPage.teardown();
+	currentPage = newPage;
+	body.innerHTML = '';
+	currentPage.render(body);
+	currentPage.on('navigation.goto', function(e, route) {
+		Router.navigate(route);
+	});
+}
+
 
 window.onload = function() {
 
@@ -64,27 +80,22 @@ window.onload = function() {
 
 	userModel = new UserModel();
 
-	var showPage = function(newPage) {
-		if(currentPage) 
-		currentPage.teardown();
-		currentPage = newPage;
-		body.innerHTML = '';
-		currentPage.render(body);
-		currentPage.on('navigation.goto', function(e, route) {
-			Router.navigate(route);
-		});
-	}
+	userModel.fetch(function(error, result) {
+	 	// ... router setting
+	});
+
+	
 
  	Router
  		.add('home', function() {
  			var p = new Home();
  			showPage(p);
  		})
- 		.add(function() {
- 			Router.navigate('home');
+ 		.add(function() { //???
+ 			Router.navigate('home'); //???
  		})
- 		.listen()
- 		.check();
+ 		.listen() //???
+ 		.check(); //???
 
  	Router
 		.add('register', function() {
@@ -97,5 +108,36 @@ window.onload = function() {
  		.listen()
  		.check();
 
- 	
+ 	Router
+		.add('login', function() {
+		 var p = new Login();
+		 showPage(p);
+		})
+		.add(function() {
+ 			Router.navigate('login');
+ 		})
+ 		.listen()
+ 		.check();
+
+ 	Router
+		.add('profile', function() {
+ 			if(userModel.isLogged()) {
+				var p = new Profile();
+			 	showPage(p);
+ 			} else {
+ 				Router.navigate('login');
+ 			}
+		})
+
+	Router
+		.add('find-friends', function() {
+ 			if(userModel.isLogged()) {
+ 				var p = new FindFriends();
+ 				showPage(p);
+ 			} else {
+ 				Router.navigate('login');
+ 			}
+		})
+
+
 }

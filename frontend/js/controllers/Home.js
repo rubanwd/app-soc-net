@@ -1,13 +1,71 @@
 var Ractive = require('ractive');
+var ContentModel = require('../models/Content');
 
 
 module.exports = Ractive.extend({
+
  	template: require('../../tpl/home'),
+
  	components: {
- 		navigation: require('../view/Navigation'),
- 		appfooter: require('../view/Footer')
+ 		navigation: require('../views/Navigation'),
+ 		appfooter: require('../views/Footer')
  	},
+
+ 	data: {
+		 posting: true
+ 	},
+
  	onrender: function() {
-		 console.log('Home page rendered');
- 	}
+
+	 	if(userModel.isLogged()) {
+	 		
+			var model = new ContentModel();
+
+			var self = this;
+
+			var getPosts = function() {
+			 	model.fetch(function(err, result) {
+			 		if(!err) {
+			 			self.set('posts', result.posts);
+			 		}
+			 	});
+			};
+
+			this.on('post', function() {
+
+			 	var files = this.find('input[type="file"]').files;
+
+			 	var formData = new FormData();
+
+			 	if(files.length > 0) {
+			 		var file = files[0];
+			 		if(file.type.match('image.*')) {
+			 			formData.append('files', file, file.name);
+			 		}
+			 	}
+
+			  	formData.append('text', this.get('text'));
+
+			 	model.create(formData, function(error, result) {
+
+			 		self.set('text', '');
+
+			 		if(error) {
+			 			self.set('error', error.error);
+			 		} else {
+			 			self.set('error', false);
+			 			self.set('success', 'The post is saved successfully.<br />What about adding another one?');
+			 			getPosts();
+			 		}
+
+			 	});
+
+			});
+
+	 	} else {
+	 		this.set('posting', false);
+	 	}
+
+	}
+
 });
